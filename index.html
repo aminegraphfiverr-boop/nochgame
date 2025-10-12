@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Quiz Game</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <!-- Streamer Setup -->
+  <div id="setup" class="setup-panel">
+    <h2>Streamer Setup</h2>
+    <input type="text" id="streamer-name" placeholder="Enter your Kick username" />
+    <select id="category-select">
+      <option value="general">General Knowledge</option>
+      <option value="music">Music</option>
+      <option value="movies">Movies</option>
+    </select>
+    <button id="start-game">Start Playing!</button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="game-area" class="hidden">
+    <div class="header">
+      <h1 id="streamer-display">Quiz with <span id="streamer-name-display"></span></h1>
+      <div class="timer-bar">
+        <div id="timer-progress"></div>
+      </div>
+      <div id="timer-display">15s</div>
+    </div>
+
+    <div id="question-box" class="question-box">
+      <img id="question-image" class="hidden" />
+      <div id="youtube-container" class="hidden"></div>
+      <p id="question-text"></p>
+    </div>
+
+    <div class="answer-input">
+      <input type="text" id="user-answer" placeholder="Type your answer..." />
+      <button id="submit-answer">Submit</button>
+    </div>
+
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <table id="players-table">
+        <thead>
+          <tr>
+            <th>Player 🎮</th>
+            <th>Correct ✅</th>
+            <th>Points 🏆</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Winner Podium -->
+  <div id="winner-screen" class="hidden">
+    <h2>🎉 Game Over! Final Rankings 🏅</h2>
+    <div class="podium">
+      <div class="podium-place second">2nd<br><span id="second-place"></span></div>
+      <div class="podium-place first">1st<br><span id="first-place"></span></div>
+      <div class="podium-place third">3rd<br><span id="third-place"></span></div>
+    </div>
+    <button id="restart-game">Play Again</button>
+  </div>
+
+  <script src="js/timer.js"></script>
+  <script src="js/kick-chat.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
