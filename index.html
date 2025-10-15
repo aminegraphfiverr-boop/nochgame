@@ -3,71 +3,578 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Live Quiz Game</title>
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <title>Songless Quiz • n0chh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a12;
+      --card-bg: rgba(18, 18, 32, 0.65);
+      --text: #f0f0ff;
+      --text-secondary: #a0a0c0;
+      --accent: #8a6dff;
+      --success: #4ade80;
+      --error: #f87171;
+      --border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --live-red: #ff4d4d;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ——— STREAM BANNER ——— */
+    .stream-banner {
+      background: linear-gradient(90deg, #1e1b4b, #312e81);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .stream-info {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .stream-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stream-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .live-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 77, 77, 0.2);
+      color: var(--live-red);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--live-red);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--live-red);
+    }
+
+    /* ——— MAIN CONTENT ——— */
+    .container {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      color: var(--accent);
+    }
+
+    /* YouTube Video Styling */
+    .video-wrapper {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 16px 0;
+      box-shadow: var(--shadow);
+    }
+
+    .video-wrapper.blurred iframe {
+      filter: blur(12px);
+      transition: filter 0.4s ease;
+    }
+
+    .video-wrapper.unlocked iframe {
+      filter: none;
+    }
+
+    .youtube-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    #guess-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    #feedback {
+      margin-top: 12px;
+      min-height: 24px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .success { color: var(--success); }
+    .error { color: var(--error); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .stat-box {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    ul#top-usernames {
+      list-style: none;
+      padding: 0;
+      margin-top: 12px;
+    }
+
+    ul#top-usernames li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .stream-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .stream-info {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
+      .stream-meta {
+        justify-content: center;
+      }
+      .input-group {
+        flex-direction: column;
+      }
+      #guess-input {
+        width: 100%;
+      }
+      .video-wrapper iframe {
+        height: 200px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Streamer Setup -->
-  <div id="setup" class="setup-panel">
-    <h2>Streamer Setup</h2>
-    <input type="text" id="streamer-name" placeholder="Enter your Kick username" />
-    <select id="category-select">
-      <option value="general">General Knowledge</option>
-      <option value="music">Music</option>
-      <option value="movies">Movies</option>
-    </select>
-    <button id="start-game">Start Playing!</button>
-  </div>
-
-  <!-- Game Area -->
-  <div id="game-area" class="hidden">
-    <div class="header">
-      <h1 id="streamer-display">Quiz with <span id="streamer-name-display"></span></h1>
-      <div class="timer-bar">
-        <div id="timer-progress"></div>
+  <!-- Stream Banner -->
+  <div class="stream-banner">
+    <img id="streamer-avatar" class="avatar" src="https://via.placeholder.com/80/312e81/ffffff?text=n0chh" alt="Streamer avatar" />
+    <div class="stream-info">
+      <h1 id="stream-title">Loading stream...</h1>
+      <div class="stream-meta">
+        <div class="meta-item">👁️ <span id="banner-viewers">0</span> viewers</div>
+        <div class="meta-item">🕒 <span id="banner-uptime">00:00:00</span></div>
+        <div class="live-indicator">
+          <span class="live-dot"></span> LIVE
+        </div>
       </div>
-      <div id="timer-display">15s</div>
     </div>
+  </div>
 
-    <div id="question-box" class="question-box">
-      <img id="question-image" class="hidden" />
-      <div id="youtube-container" class="hidden"></div>
-      <p id="question-text"></p>
-    </div>
+  <!-- Main Content -->
+  <div class="container">
+    <header style="text-align: center; margin-bottom: 24px;">
+      <h2>🎵 Songless Quiz</h2>
+      <p style="color: var(--text-secondary); font-size: 0.95rem;">Guess the song • Earn points • Chat with the community</p>
+    </header>
 
-    <div class="answer-input">
-      <input type="text" id="user-answer" placeholder="Type your answer..." />
-      <button id="submit-answer">Submit</button>
-    </div>
+    <!-- Quiz Card -->
+    <section class="card">
+      <h2>🎧 Current Song</h2>
+      <div class="video-wrapper blurred">
+        <iframe
+          id="youtube-player"
+          width="100%"
+          height="300"
+          src=""
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+      <p style="margin: 12px 0;">
+        <a id="youtube-link" href="#" target="_blank" class="youtube-link">🎥 Watch on YouTube</a>
+      </p>
 
-    <div class="leaderboard">
-      <h2>Leaderboard</h2>
-      <table id="players-table">
-        <thead>
-          <tr>
-            <th>Player 🎮</th>
-            <th>Correct ✅</th>
-            <th>Points 🏆</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboard-body"></tbody>
+      <div class="input-group">
+        <input type="text" id="guess-input" placeholder="e.g., 'Blinding Lights - The Weeknd'" autocomplete="off" />
+        <button onclick="submitGuess()">Submit Guess</button>
+      </div>
+      <p id="feedback"></p>
+
+      <h2>🏆 Leaderboard</h2>
+      <table id="scoreboard">
+        <thead><tr><th>User</th><th>Points</th></tr></thead>
+        <tbody id="scoreboard-body"></tbody>
       </table>
-    </div>
+    </section>
+
+    <!-- Stats Card -->
+    <section class="card">
+      <h2>📊 Live Chat & Viewer Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">Session Time</div>
+          <div id="session-duration" class="stat-value">00:00:00</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Messages</div>
+          <div id="message-count" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Unique Chatters</div>
+          <div id="unique-usernames" class="stat-value">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Peak Viewers</div>
+          <div id="viewer-peak" class="stat-value">0</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 20px;">Top Chatters</h3>
+      <ul id="top-usernames"></ul>
+    </section>
   </div>
 
-  <!-- Winner Podium -->
-  <div id="winner-screen" class="hidden">
-    <h2>🎉 Game Over! Final Rankings 🏅</h2>
-    <div class="podium">
-      <div class="podium-place second">2nd<br><span id="second-place"></span></div>
-      <div class="podium-place first">1st<br><span id="first-place"></span></div>
-      <div class="podium-place third">3rd<br><span id="third-place"></span></div>
-    </div>
-    <button id="restart-game">Play Again</button>
-  </div>
+  <!-- Timer & Quiz Logic -->
+  <script type="module">
+    // Simple timer (you can keep timer.js if you have it)
+    const startTime = Date.now();
+    function calculateSessionDuration() {
+      const elapsed = Date.now() - startTime;
+      const h = Math.floor(elapsed / 3600000).toString().padStart(2, '0');
+      const m = Math.floor((elapsed % 3600000) / 60000).toString().padStart(2, '0');
+      const s = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
 
-  <script src="js/timer.js"></script>
-  <script src="js/kick-chat.js"></script>
-  <script src="js/game.js"></script>
+    setInterval(() => {
+      document.getElementById('session-duration').textContent = calculateSessionDuration();
+    }, 1000);
+
+    // --- Song Quiz ---
+    let currentSong = null;
+    const scoreboard = new Map();
+    // List your song IDs (filenames without .json)
+    const SONG_IDS = ['song1', 'song2', 'song3']; // ← Add your own
+
+    async function loadRandomSong() {
+      if (SONG_IDS.length === 0) return;
+      const id = SONG_IDS[Math.floor(Math.random() * SONG_IDS.length)];
+      try {
+        const meta = await fetch(`songs/${id}.json`).then(r => r.json());
+        currentSong = { ...meta, id };
+
+        const url = new URL(meta.youtube);
+        const videoId = url.searchParams.get('v');
+        if (!videoId) throw new Error('Invalid YouTube URL');
+
+        // 10-second preview
+        const previewSrc = `https://www.youtube.com/embed/${videoId}?start=0&end=10&autoplay=0`;
+        const player = document.getElementById('youtube-player');
+        player.src = previewSrc;
+        document.querySelector('.video-wrapper').className = 'video-wrapper blurred';
+
+        document.getElementById('youtube-link').href = meta.youtube;
+        document.getElementById('feedback').textContent = '';
+      } catch (e) {
+        console.error('Song load error', e);
+        document.getElementById('feedback').textContent = '⚠️ Failed to load song.';
+      }
+    }
+
+    function submitGuess() {
+      const input = document.getElementById('guess-input');
+      const guess = input.value.trim();
+      const feedback = document.getElementById('feedback');
+      if (!guess || !currentSong) {
+        feedback.className = 'error';
+        feedback.textContent = 'Enter a guess!';
+        return;
+      }
+
+      const correctAnswer = `${currentSong.title} - ${currentSong.artist}`.toLowerCase();
+      if (guess.toLowerCase() === correctAnswer) {
+        const user = prompt('🎉 Correct! Enter your username:')?.trim() || 'Anonymous';
+        scoreboard.set(user, (scoreboard.get(user) || 0) + 10);
+        updateScoreboard();
+
+        feedback.className = 'success';
+        feedback.textContent = '✅ Correct! Full song unlocked!';
+        input.value = '';
+
+        // Unlock full video
+        const url = new URL(currentSong.youtube);
+        const videoId = url.searchParams.get('v');
+        const fullSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        document.getElementById('youtube-player').src = fullSrc;
+        document.querySelector('.video-wrapper').className = 'video-wrapper unlocked';
+
+        setTimeout(loadRandomSong, 5000);
+      } else {
+        feedback.className = 'error';
+        feedback.textContent = '❌ Incorrect. Try again!';
+      }
+    }
+
+    function updateScoreboard() {
+      const body = document.getElementById('scoreboard-body');
+      body.innerHTML = '';
+      [...scoreboard.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .forEach(([user, pts]) => {
+          const row = body.insertRow();
+          row.insertCell(0).textContent = user;
+          row.insertCell(1).textContent = pts;
+        });
+    }
+
+    // Start first song
+    loadRandomSong();
+  </script>
+
+  <!-- Kick Stream & Chat Stats -->
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const channel = urlParams.get("kick") || "n0chh";
+    const topListLength = parseInt(urlParams.get("lL")) || 5;
+
+    const avatarEl = document.getElementById("streamer-avatar");
+    const titleEl = document.getElementById("stream-title");
+    const viewersEl = document.getElementById("banner-viewers");
+    const uptimeEl = document.getElementById("banner-uptime");
+
+    const msgEl = document.getElementById("message-count");
+    const uniqEl = document.getElementById("unique-usernames");
+    const peakEl = document.getElementById("viewer-peak");
+    const topEl = document.getElementById("top-usernames");
+
+    let messageCount = 0;
+    const uniqueUsernames = new Set();
+    const topUsernames = new Map();
+    let peakViewerCount = 0;
+    let streamStartTime = null;
+
+    const excludedBots = ["babblechat","botrix","casterlabs","intrx","livebot","lottobot","logibot","mrbeefbot","notibot","squadbot","babzbot","kickbot","kicklet","boostbot","kicktools","aerokick"];
+
+    async function fetchStreamData() {
+      try {
+        const res = await fetch(`https://kick.com/api/v2/channels/${channel}`);
+        const data = await res.json();
+
+        avatarEl.src = data.user?.profile_pic || `https://via.placeholder.com/80/312e81/ffffff?text=${channel}`;
+        titleEl.textContent = data.livestream?.session_title || "Offline";
+        viewersEl.textContent = data.livestream?.viewer_count?.toLocaleString() || "0";
+
+        if (data.livestream?.created_at) {
+          streamStartTime = new Date(data.livestream.created_at).getTime();
+          startUptimeTimer();
+        } else {
+          uptimeEl.textContent = "Offline";
+          clearInterval(window.uptimeInterval);
+        }
+
+        if (!window.wsInitialized && data.chatroom?.id) {
+          connectWebSocket(data.chatroom.id);
+          window.wsInitialized = true;
+        }
+      } catch (e) {
+        console.error("Stream data error", e);
+        titleEl.textContent = "Stream not found";
+      }
+    }
+
+    function startUptimeTimer() {
+      clearInterval(window.uptimeInterval);
+      window.uptimeInterval = setInterval(() => {
+        if (!streamStartTime) return;
+        const elapsed = Date.now() - streamStartTime;
+        const h = Math.floor(elapsed / 3600000).toString().padStart(2, '0');
+        const m = Math.floor((elapsed % 3600000) / 60000).toString().padStart(2, '0');
+        const s = Math.floor((elapsed % 60000) / 1000).toString().padStart(2, '0');
+        uptimeEl.textContent = `${h}:${m}:${s}`;
+      }, 1000);
+    }
+
+    function connectWebSocket(chatroomId) {
+      const ws = new WebSocket("wss://ws-us2.pusher.com/app/32cbd69e4b950bf97679?protocol=7&client=js&version=7.6.0");
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ event: "pusher:subscribe", data: { auth: "", channel: `chatrooms.${chatroomId}.v2` } }));
+      };
+      ws.onmessage = (event) => {
+        const d = JSON.parse(event.data);
+        if (d.event !== "App\\Events\\ChatMessageEvent") return;
+        const msg = JSON.parse(d.data);
+        const user = msg.sender.username.toLowerCase();
+        if (excludedBots.includes(user)) return;
+
+        messageCount++;
+        const key = `${msg.sender.id}-${msg.sender.username}`;
+        uniqueUsernames.add(key);
+        topUsernames.set(key, (topUsernames.get(key) || 0) + 1);
+
+        msgEl.textContent = messageCount.toLocaleString();
+        uniqEl.textContent = uniqueUsernames.size.toLocaleString();
+        updateTopChatters();
+      };
+    }
+
+    function updateTopChatters() {
+      topEl.innerHTML = '';
+      const list = [...topUsernames.entries()].sort((a,b) => b[1]-a[1]).slice(0, topListLength);
+      list.forEach(([k, c]) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${k.split('-')[1]}</strong> <span style="color:#a0a0c0">${c} messages</span>`;
+        topEl.appendChild(li);
+      });
+    }
+
+    async function fetchViewerStats() {
+      try {
+        const data = await (await fetch(`https://kick.com/api/v2/channels/${channel}`)).json();
+        if (data.livestream) {
+          const v = data.livestream.viewer_count || 0;
+          if (v > peakViewerCount) {
+            peakViewerCount = v;
+            peakEl.textContent = v.toLocaleString();
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    fetchStreamData();
+    fetchViewerStats();
+    setInterval(fetchStreamData, 30000);
+    setInterval(fetchViewerStats, 60000);
+  </script>
 </body>
 </html>
