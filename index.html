@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n0chh | Professional Live Stats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-pink: #f472b6;
+            --primary-purple: #a855f7;
+            --bg-dark: #020617;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel:hover {
+            border-color: rgba(244, 114, 182, 0.3);
+            box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.15);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--primary-pink), var(--primary-purple));
+        }
+        .glow-pink { box-shadow: 0 0 20px rgba(244, 114, 182, 0.4); }
+        .glow-purple { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; box-shadow: 0 0 15px rgba(244, 114, 182, 0.2); }
+            50% { opacity: 1; box-shadow: 0 0 30px rgba(168, 85, 247, 0.5); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-slide-up { animation: slideInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+        .animate-pulse-glow { animation: pulseGlow 2s infinite ease-in-out; }
+        .animate-float { animation: float 4s infinite ease-in-out; }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-pink); }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.3/",
+    "react": "https://aistudiocdn.com/react@^19.2.3",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.3/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

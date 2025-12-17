@@ -1,0 +1,5 @@
+{
+  "name": "n0chh Professional Kick Stats Tracker",
+  "description": "A high-performance, aesthetically pleasing live statistics dashboard for Kick streamers, featuring real-time chat analysis, top chatter leaderboards, and automated raffle tracking with persistent data storage.",
+  "requestFramePermissions": []
+}
